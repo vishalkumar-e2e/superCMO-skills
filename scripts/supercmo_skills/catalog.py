@@ -417,6 +417,19 @@ def _kling_turbo(prefix, price):
             durations=d, requires=("start_frame_image",)))
 
 
+def _blaze_h3():
+    """Blaze Video (MiniMax H3): one reference-to-video endpoint that takes a start frame, an end
+    frame and image / video / audio references together; native audio, 4-15s, six aspect ratios."""
+    return {"provider": "blaze", "queued": True, "audio_param": "generate_audio", "duration_unit": None,
+            "max_refs": {"reference_images": 9, "reference_videos": 3, "reference_audios": 3},
+            "combined_ref_max": None, "price": "see your Blaze plan", "defaults": {},
+            "endpoints": {"r2v": _ep("MiniMaxAI/MiniMax-H3",
+                media={"start_frame_image": "scene", "end_frame_image": "end",
+                       "reference_images": "identity", "reference_videos": "reference_videos",
+                       "reference_audios": "audio_references"},
+                aspects=["16:9", "9:16", "21:9", "4:3", "3:4", "1:1"], durations=list(range(4, 16)))}}
+
+
 def _one(display, strengths, route, *more):
     """One alias: agent-facing metadata plus its ordered routes (wavespeed first, then fal)."""
     return {"display": display, "strengths": strengths, "routes": [route, *more]}
@@ -566,6 +579,10 @@ VIDEO_MODELS = {
             r2v=_ep("fal-ai/wan/v2.7/reference-to-video",
                     media={"reference_images": "reference_image_urls", "reference_videos": "reference_video_urls"},
                     aspects=VIDEO_ASPECTS, durations=list(range(2, 11)), resolutions=["720p", "1080p"]))),
+    "minimax-h3": _one("MiniMax H3 on Blaze",
+        "native audio generated with the picture; up to 9 reference pictures, 3 videos and 3 audios; "
+        "start and end frame; 4-15s; 21:9 to 9:16. Needs at least one reference (no text-only)",
+        _blaze_h3()),
     "kling-3.0-turbo-pro": _one("Kling 3.0 Turbo Pro (Kuaishou)",
         "fast, low-cost 1080p Kling; text or start frame (no end frame, no audio)",
         _ws_kling_turbo("kwaivgi/kling-v3-turbo-pro", "$0.14/s"),
@@ -953,6 +970,14 @@ def research_sources_listing(query=None):
 _TABLES = {"image": IMAGE_MODELS, "video": VIDEO_MODELS, "audio": AUDIO_MODELS,
            "extract": EXTRACT_MODELS, "analysis": ANALYSIS_MODELS, "research": RESEARCH_MODELS,
            "transcribe": TRANSCRIBE_MODELS}
+# Aliases served by one direct provider only (no wavespeed/fal lane, no managed proxy).
+DIRECT_ONLY = {"video": ("minimax-h3",)}
+
+
+def is_direct_only(capability, model):
+    return model in DIRECT_ONLY.get(capability, ())
+
+
 DEFAULTS = {"image": DEFAULT_MODEL, "video": "seedance-2.0-fast", "audio": "eleven-v3",
             "extract": "web-extract", "analysis": "gemini-flash-latest", "research": "social-research",
             "transcribe": "scribe"}
@@ -1126,10 +1151,14 @@ if __name__ == "__main__":
     for _cap, _table in (("image", IMAGE_MODELS), ("video", VIDEO_MODELS)):
         for _m in _table:
             _rs = routes_of(_cap, _m)
-            assert [r["provider"] for r in _rs] == ["wavespeed", "fal"], (_cap, _m, _rs)
+            assert [r["provider"] for r in _rs] == (["blaze"] if _m in DIRECT_ONLY.get(_cap, ()) else
+                                                    ["wavespeed", "fal"]), (_cap, _m, _rs)
             assert all(r.get("price") for r in _rs), f"{_cap}/{_m} route missing a price"
     assert default_model("video") == "seedance-2.0-fast"
-    assert len(VIDEO_MODELS) == 16 and len(IMAGE_MODELS) == 11
+    assert len(VIDEO_MODELS) == 17 and len(IMAGE_MODELS) == 11
+    assert is_direct_only("video", "minimax-h3") and not is_direct_only("video", "seedance-2.0")
+    _h3 = routes_of("video", "minimax-h3")[0]
+    assert video_endpoint_for(_h3, {"start_frame_image", "end_frame_image", "reference_images"})["id"] == "MiniMaxAI/MiniMax-H3"
 
     # ---- fal endpoint resolution is unchanged ----
     _sd = routes_of("video", "seedance-2.0")[1]
@@ -1145,6 +1174,8 @@ if __name__ == "__main__":
 
     # ---- parity: the two lanes advertise the SAME media surface for every alias ----
     for _m in VIDEO_MODELS:
+        if is_direct_only("video", _m):
+            continue
         _w, _f = routes_of("video", _m)
         assert video_media_kinds(_w) == video_media_kinds(_f), (
             _m, sorted(video_media_kinds(_w)), sorted(video_media_kinds(_f)))

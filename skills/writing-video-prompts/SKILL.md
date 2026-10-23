@@ -60,6 +60,7 @@ hand, a duplicate arm, a doubled person.
 | `grok-imagine-video` | `references/prompt-grok.md` |
 | `wan-2.7` | `references/prompt-wan.md` |
 | `wan-3.0` | `references/prompt-wan.md` |
+| `minimax-h3` | `references/prompt-minimax-h3.md` |
 
 The `-fast` / `-lite` / `-turbo` / `-standard` / `-mini` variants share their family's guide.
 
@@ -251,3 +252,4 @@ and the order they were labelled in.
 - `references/prompt-kling.md` — director-script style, `@Element` references, per-speaker dialogue labels.
 - `references/prompt-grok.md` — tight front-loaded briefs, positive-only exclusions, one action per clip.
 - `references/prompt-wan.md` — front-loaded prose, multi-shot timestamps, driving-audio sync.
+- `references/prompt-minimax-h3.md` — Blaze API notes: required references, `<Picture N>` tags, limits.

@@ -57,6 +57,7 @@ Reach past the default only on a clear signal:
 | Must hold one person or character consistent across references or several shots | `kling-3.0-pro` |
 | Has an edgy or sensitive subject Seedance would refuse, or wants the fastest, cheapest draft | `grok-imagine-video` |
 | Is a high-volume or cost-sensitive batch where top quality isn't essential | `wan-2.7` |
+| The user asks for Blaze or MiniMax H3 (needs a `BLAZE_API_KEY` and at least one picture, video or audio reference) | `minimax-h3` |
 
 When more than one fits, work down this list and stop at the first that applies:
 

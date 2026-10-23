@@ -31,7 +31,7 @@ jobs:
           python -m venv /tmp/smoke
           /tmp/smoke/bin/pip install --quiet .
           /tmp/smoke/bin/python -c "import sys; b=list(sys.path); import supercmo_skills, supercmo_env; assert sys.path == b, f'library mutated sys.path on import: {sys.path}'; print('import smoke OK — sys.path unchanged')"
-          for m in supercmo_skills supercmo_skills.client supercmo_skills.catalog supercmo_skills.readiness supercmo_skills.providers.fal supercmo_skills.providers.wavespeed; do
+          for m in supercmo_skills supercmo_skills.client supercmo_skills.catalog supercmo_skills.readiness supercmo_skills.providers.fal supercmo_skills.providers.wavespeed supercmo_skills.providers.blaze; do
             echo "self-test: python -m $m"; /tmp/smoke/bin/python -m "$m"
           done
           /tmp/smoke/bin/python -m supercmo_env --selftest
