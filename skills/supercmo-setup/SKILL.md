@@ -39,6 +39,7 @@ It opens SuperCMO in your browser to sign in and authorize this device; the key 
 | --- | --- | --- |
 | `WAVESPEED_API_KEY` | generate images + video (recommended) | https://wavespeed.ai/dashboard |
 | `FAL_KEY` | generate images + video (also supported) | https://fal.ai/dashboard/keys |
+| `BLAZE_API_KEY` | generate video with MiniMax H3 on Blaze (`BLAZE_API_URL` picks the API) | the Blaze console |
 | `ELEVENLABS_API_KEY` | generate voiceover + narration | https://elevenlabs.io/app/settings/api-keys |
 | `GEMINI_API_KEY` | analyze a photo or video | https://aistudio.google.com/app/apikey |
 | `FIRECRAWL_API_KEY` | extract data from URLs | https://www.firecrawl.dev/app/api-keys |

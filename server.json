@@ -19,6 +19,7 @@
       "environmentVariables": [
         { "name": "WAVESPEED_API_KEY", "description": "WaveSpeed key — image + video (recommended)", "isSecret": true },
         { "name": "FAL_KEY", "description": "fal.ai key — image + video", "isSecret": true },
+        { "name": "BLAZE_API_KEY", "description": "Blaze key — video with MiniMax H3", "isSecret": true },
         { "name": "ELEVENLABS_API_KEY", "description": "ElevenLabs key — voiceover", "isSecret": true },
         { "name": "GEMINI_API_KEY", "description": "Gemini key — image/video analysis", "isSecret": true },
         { "name": "FIRECRAWL_API_KEY", "description": "Firecrawl key — URL extraction", "isSecret": true },

@@ -21,6 +21,7 @@ try:
     from . import telemetry as _telemetry  # anonymous, opt-out usage counts; never required
 except ImportError:  # only an absent module degrades; a bug inside telemetry must surface, not hide
     _telemetry = None
+from .providers import blaze as _blaze
 from .providers import elevenlabs as _elevenlabs
 from .providers import fal as _fal
 from .providers import firecrawl as _firecrawl
@@ -31,7 +32,7 @@ from .providers import wavespeed as _wavespeed
 # provider name -> module (uniform contract: BYOK_ENV / is_available / <cap>_generate / <cap>_request_spec).
 # Catalog routes only name a provider for capabilities it implements, so a provider is never asked
 # for a capability it lacks.
-_PROVIDERS = {"wavespeed": _wavespeed, "fal": _fal, "elevenlabs": _elevenlabs,
+_PROVIDERS = {"wavespeed": _wavespeed, "fal": _fal, "blaze": _blaze, "elevenlabs": _elevenlabs,
               "gemini": _gemini, "firecrawl": _firecrawl, "scrapecreators": _scrapecreators}
 
 # Pins which vendor serves image/video when more than one vendor key is present; unset means catalog
@@ -88,7 +89,7 @@ def select_route(capability, model, allow_proxy=True):
         provider = _PROVIDERS.get(route["provider"])
         if provider and provider.is_available():
             return ("direct", provider, route)
-    if allow_proxy and supercmo_env.supercmo_key():
+    if allow_proxy and supercmo_env.supercmo_key() and not catalog.is_direct_only(capability, model):
         return ("proxy", None, None)
     return ("none", None, None)
 
@@ -1068,7 +1069,7 @@ def list_voices_managed(filters):
 
 
 if __name__ == "__main__":
-    _KEYS = ("WAVESPEED_API_KEY", "FAL_KEY", "ELEVENLABS_API_KEY", "GEMINI_API_KEY",
+    _KEYS = ("WAVESPEED_API_KEY", "FAL_KEY", "BLAZE_API_KEY", "ELEVENLABS_API_KEY", "GEMINI_API_KEY",
              "FIRECRAWL_API_KEY", "SUPERCMO_API_KEY", _PROVIDER_OVERRIDE_ENV)
 
     # Route tests below build their own credential states in os.environ. Keep the user's

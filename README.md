@@ -310,6 +310,7 @@ there on any host (Claude Code, Cursor, Codex, …). Open it and add a key:
 # ~/.supercmo/.env
 WAVESPEED_API_KEY=your-key # image + video (start here) — https://wavespeed.ai
 FAL_KEY=                   # image + video (alternative) — https://fal.ai
+BLAZE_API_KEY=             # video, MiniMax H3 (optional) — Blaze console
 ELEVENLABS_API_KEY=        # voiceover (optional)        — https://elevenlabs.io
 GEMINI_API_KEY=            # image/video analysis (opt.) — https://aistudio.google.com
 FIRECRAWL_API_KEY=         # url extraction (optional)   — https://firecrawl.dev
